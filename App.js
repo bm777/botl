@@ -49,7 +49,7 @@ export default function App() {
 
 
   return (
-    <View className="flex-1 items-center justify-center bg-[#010559]">
+    <View className="flex-1 items-center justify-center bg-[#2F1F68]">
       {
         splahscreen ?
         <View className="flex-1 items-center justify-center w-full">
@@ -63,7 +63,7 @@ export default function App() {
         :
         <View className="w-full h-full bg-[#2F1F68] relative">
           {/* top+body */}
-          <View className="w-full h-[81%] mt-10 border overflow-auto relative">
+          <View className="w-full h-[81%] mt-10  overflow-auto relative">
             <View className="flex flex-row items-center mx-[5%] mt-3">
               {/* <CLI color={"#fff"} size={30} /> */}
               <Text className="text-white text-3xl font-semibold">Payment</Text>
@@ -121,9 +121,9 @@ export default function App() {
 
 
             {/* --------- button --------- */}
-            <View className=" absolute bottom-5 border rounded-md flex w-full h-[8%]">
+            <View className=" absolute bottom-5 rounded-md flex w-full h-[8%]">
               <View className="bg-[#7C5EF2] w-[95%] h-full mx-auto overflow-hidden rounded-md flex flex-row items-center justify-center"> 
-                <Text className="text-[#fff] text-lg font-semibold">Request payment {currency}-{amount}</Text>
+                <Text className="text-[#fff] text-lg font-semibold">Request payment</Text>
               </View>
             </View>
           </View>

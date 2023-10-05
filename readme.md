@@ -1,15 +1,18 @@
-
+# BTOL
 
 # Usage of the mobile app
-```
-cd ontime
+```bash
+cd botl
 yarn
-npx expo start
+npx expo start 
 
 ```
 Scan the QR code on your terminal
 
 <p align="center">
-    <img src="assets/mobile.png">
+    <img src="assets/splash.jpg">
+</p>
+<p align="center">
+    <img src="assets/payment.jpg">
 </p>
 
