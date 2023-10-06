@@ -1,8 +1,9 @@
 import 'react-native-get-random-values';
 import 'react-native-url-polyfill/auto';
+
 import { StatusBar } from 'expo-status-bar';
 import { Text, TextInput, View } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { TouchableOpacity } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 
@@ -20,7 +21,7 @@ import {
     ChevronLeftIcon as CLI,
   } from "react-native-heroicons/outline"
 
-  import BigNumber from 'bignumber.js';
+import BigNumber from 'bignumber.js';
 import {
   Cluster,
   clusterApiUrl,
@@ -46,6 +47,7 @@ export default function App() {
   const [currency, setCurrency] = useState("SOL") //
   const [token, setToken] = useState("EYmC6miHQ3J8u5EvQtnXAd7TQL1jpauruQXimK1jZEJZ") //
   const connection = new Connection('https://api.devnet.solana.com');
+  let ref = useRef(null);
 
  
   useEffect(() =>  {
@@ -66,29 +68,33 @@ export default function App() {
     const payment_recipient = new PublicKey(token); // -> to change with euroe or bonk currency
     const payment_amount = new BigNumber(amount)
     const payment_reference = new Keypair().publicKey;
-    // const payment_label = "Botl LLP";
-    // const payment_message = "Botl donation";
-    // let r = (Math.random() + 1).toString(36).substring(7);
-    // const payment_memo = '#' + r;
+    const payment_label = "Botl LLP";
+    const payment_message = "Botl donation";
+    let r = (Math.random() + 1).toString(36).substring(7);
+    const payment_memo = '#' + r;
     console.log(
       payment_recipient,
       payment_amount,
       payment_reference,
-      // payment_label,
-      // payment_message,
-      // payment_memo
-)
+      payment_label,
+      payment_message,
+      payment_memo
+  )
+  const url = encodeURL({
+    recipient: payment_recipient,
+    amount: payment_amount,
+    reference: payment_reference,
+    label: payment_label,
+    message: payment_message,
+    memo: payment_memo,
+  });
+  console.log(url)
+  const qrCode = createQR(url);
+  qrCode.append(ref.current);
   } 
   
 
-  // const url = encodeURL({
-  //   recipient: payment_recipient,
-  //   amount: payment_amount,
-  //   reference: payment_reference,
-  //   label: payment_label,
-  //   message: payment_message,
-  //   memo: payment_memo,
-  // });
+  
 
 
 
@@ -162,6 +168,11 @@ export default function App() {
                   />
               </View>
             </View>
+
+            <View className="rounded-md flex flex-col mx-[5%] mt-4">
+              <Text className="text-sm text-[#afb9e1] font-semibold">QR Code</Text>
+            </View>
+            <View className="rounded-md flex flex-col mx-[5%] h-[150px] mt-2 border" ref={ref}></View>
 
 
             {/* --------- button --------- */}
