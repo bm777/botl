@@ -12,14 +12,20 @@
     "@expo/ngrok": "^4.1.0",
     "@expo/vector-icons": "^13.0.0",
     "@phosphor-icons/react": "^2.0.10",
+    "@solana/pay": "^0.2.5",
+    "@solana/web3.js": "^1.78.7",
+    "bignumber.js": "^9.1.2",
     "expo": "^49.0.13",
     "expo-status-bar": "~1.4.4",
     "nativewind": "^2.0.11",
     "react": "18.2.0",
     "react-native": "0.71.8",
+    "react-native-get-random-values": "^1.9.0",
     "react-native-heroicons": "^3.2.0",
     "react-native-picker-select": "^8.1.0",
-    "react-native-svg": "^13.14.0"
+    "react-native-svg": "^13.14.0",
+    "react-native-url-polyfill": "^2.0.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -1,8 +1,11 @@
+import 'react-native-get-random-values';
+import 'react-native-url-polyfill/auto';
 import { StatusBar } from 'expo-status-bar';
 import { Text, TextInput, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
+
 import {
     ViewfinderCircleIcon as VCIS, 
     HomeIcon as HIS, 
@@ -17,6 +20,22 @@ import {
     ChevronLeftIcon as CLI,
   } from "react-native-heroicons/outline"
 
+  import BigNumber from 'bignumber.js';
+import {
+  Cluster,
+  clusterApiUrl,
+  PublicKey,
+  Keypair,
+  Connection,
+  Transaction,
+  Message,
+} from '@solana/web3.js';
+import {
+  encodeURL,
+  findTransactionSignature,
+  FindTransactionSignatureError,
+  createQR,
+} from '@solana/pay';
 
 export default function App() {
 
@@ -24,8 +43,9 @@ export default function App() {
   const [page, setPage] = useState("home") // home - scan - profile
 
   const [amount, setAmount] = useState("0") //
-  const [currency, setCurrency] = useState("EUROe") //
-  const [token, setToken] = useState("0x000000") //
+  const [currency, setCurrency] = useState("SOL") //
+  const [token, setToken] = useState("EYmC6miHQ3J8u5EvQtnXAd7TQL1jpauruQXimK1jZEJZ") //
+  const connection = new Connection('https://api.devnet.solana.com');
 
  
   useEffect(() =>  {
@@ -42,9 +62,33 @@ export default function App() {
   const handleSettings = () => { setPage("settings")}
   const handleCurrency = (cur) => { setCurrency(cur)}
   const handleAmount = (value) => { setAmount(value)}
-  const showQr = () => {
-
+  const generateQr = () => {
+    const payment_recipient = new PublicKey(token); // -> to change with euroe or bonk currency
+    const payment_amount = new BigNumber(amount)
+    const payment_reference = new Keypair().publicKey;
+    // const payment_label = "Botl LLP";
+    // const payment_message = "Botl donation";
+    // let r = (Math.random() + 1).toString(36).substring(7);
+    // const payment_memo = '#' + r;
+    console.log(
+      payment_recipient,
+      payment_amount,
+      payment_reference,
+      // payment_label,
+      // payment_message,
+      // payment_memo
+)
   } 
+  
+
+  // const url = encodeURL({
+  //   recipient: payment_recipient,
+  //   amount: payment_amount,
+  //   reference: payment_reference,
+  //   label: payment_label,
+  //   message: payment_message,
+  //   memo: payment_memo,
+  // });
 
 
 
@@ -94,10 +138,10 @@ export default function App() {
                 <RNPickerSelect
                     onValueChange={value =>handleCurrency(value)}
                     items={[
-                      { label: 'SOL', value: 'sol' },
-                      { label: 'EUROe', value: 'euroe' },
-                      { label: 'BONK', value: 'bonk' },
-                      { label: 'USDC', value: 'usdc' },
+                      { label: 'SOL', value: 'SOL' },
+                      { label: 'EUROe', value: 'EUROe' },
+                      { label: 'BONK', value: 'BONK' },
+                      { label: 'USDC', value: 'USDC' },
                     ]}
                     value={currency}
                     defaultValue="euroe"
@@ -122,9 +166,11 @@ export default function App() {
 
             {/* --------- button --------- */}
             <View className=" absolute bottom-5 rounded-md flex w-full h-[8%]">
-              <View className="bg-[#7C5EF2] w-[95%] h-full mx-auto overflow-hidden rounded-md flex flex-row items-center justify-center"> 
-                <Text className="text-[#fff] text-lg font-semibold">Request payment</Text>
-              </View>
+              <TouchableOpacity onPress={generateQr}>
+                <View className="bg-[#7C5EF2] w-[95%] h-full mx-auto overflow-hidden rounded-md flex flex-row items-center justify-center"> 
+                  <Text className="text-[#fff] text-lg font-semibold">Request payment</Text>
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
 
