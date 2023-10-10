@@ -9,13 +9,15 @@ import RNPickerSelect from 'react-native-picker-select';
 import { SafeAreaView, ScrollView } from 'react-native';
 
 import {
-    ViewfinderCircleIcon as VCIS, 
+    ViewfinderCircleIcon as VCIS,
     HomeIcon as HIS, 
     QrCodeIcon as QCIS,
-    Cog6ToothIcon as C6IS
+    Cog6ToothIcon as C6IS,
+    CheckCircleIcon as CCI,
   } from "react-native-heroicons/solid"
 import {
     ViewfinderCircleIcon as VCI, 
+    ArrowDownLeftIcon as ADLI,
     HomeIcon as HI,
     QrCodeIcon as QCI,
     Cog6ToothIcon as C6I,
@@ -24,20 +26,15 @@ import {
 
 import BigNumber from 'bignumber.js';
 import {
-  Cluster,
-  clusterApiUrl,
   PublicKey,
   Keypair,
   Connection,
-  Transaction,
-  Message,
 } from '@solana/web3.js';
 import {
   encodeURL,
-  findTransactionSignature,
-  FindTransactionSignatureError,
 } from '@solana/pay';
-import CreateQR from './comp/createQr';
+import CreateQR from './screens/createQr';
+import Tx from './screens/tx';
 
 export default function App() {
 
@@ -45,9 +42,10 @@ export default function App() {
   const [page, setPage] = useState("home") // home - scan - profile
   const [showQr, setSowhQr] = useState(false)
   const [url, setUrl] = useState("")
+  const [transactions, setTransactions] = useState([1,2,3,4,5,6,7,8,9,0])
 
-  const [amount, setAmount] = useState("0") //
-  const [currency, setCurrency] = useState("SOL") ///Users/bm7/hackathons/solana/ontime/ontime/App.js
+  const [amount, setAmount] = useState("0.0001") //
+  const [currency, setCurrency] = useState("EUROe") ///Users/bm7/hackathons/solana/ontime/ontime/App.js
   const [token, setToken] = useState("EYmC6miHQ3J8u5EvQtnXAd7TQL1jpauruQXimK1jZEJZ") //
   // const connection = new Connection('https://api.devnet.solana.com');
   let ref = useRef(null);
@@ -72,7 +70,7 @@ export default function App() {
     const payment_amount = new BigNumber(amount)
     const payment_reference = new Keypair().publicKey;
     const payment_label = "Botl LLP";
-    const payment_message = "Botl donation";
+    const payment_message = "Botl transaction";
     let r = (Math.random() + 1).toString(36).substring(7);
     const payment_memo = '#' + r;
     console.log(
@@ -128,7 +126,7 @@ export default function App() {
                 <ScrollView contentInsetAdjustmentBehavior='automatic'>
                   <View className="flex flex-1 flex-col justify-center ">
                     {/* 3B2A7A */}
-                    <View className=" w-[90%] mt-10 mx-auto bg-[#7c5ef3] shadow-xl rounded-xl">
+                    <View className=" w-[90%] mt-10 mx-auto bg-[#7c5ef3] rounded-xl">
                       <Text className="text-[#8C9FD0] text-2xl font-base ml-5 mt-6">My balance</Text>
                       <Text className="text-white text-5xl font-semibold ml-5 mt-4">{currency} 1.567  </Text>
                       <View className="flex flex-row justify-end mt-5 mb-5">
@@ -141,12 +139,25 @@ export default function App() {
 
                   {/* transactions */}
                   <View className="flex flex-row items-center mx-[5%] mt-10">
-                    <Text className="text-[#8C9FD0] text-3xl font-medium">Transactions</Text>
+                    <Text className="text-[#8C9FD0] text-2xl font-medium">Transactions</Text>
                   </View>
+                  
+                  {/* tx */}
+                  {
+                    transactions.length !== 0 ?
+                      <>
+                      {
+                        transactions.map((tx, id) => {
+                          return <Tx key={id} adress={token} amount={0.05345535} date={"10/10/2023"} currency={currency} />
+                        })
+                      }
+                      </>
+                      :
+                      <View className="mx-[5%] mt-3">
+                        <Text className=" text-[#8C9FD0] mt-1">No transaction</Text>
+                      </View>
 
-                  <View className="flex flex-row items-center mx-[5%] mt-1 rounded-md bg-[#28146B] shadow-xl border">
-                    <Text className="text-white text-3xl font-medium">amount</Text>
-                  </View>
+                  }
                 </ScrollView>
               </SafeAreaView>
               
@@ -174,8 +185,9 @@ export default function App() {
                   <TextInput className="text-[#289BE3] bg-[#28146B] text-2xl font-semibold text-center mb-2" 
                             keyboardType="numeric" 
                             returnKeyType='done'
+                            defaultValue='0.00001'
                             onChangeText={val => handleAmount(val)}
-                            maxLength={3}>
+                            maxLength={7}>
                   </TextInput>
                 </View>
               </View>
@@ -250,7 +262,7 @@ export default function App() {
 
           {/* bottom */}
           <View className="w-[100%] h-[10%] flex absolute bottom-10">
-            <View className="w-[95%] h-[100%] bg-[#3B2A7A] mx-auto rounded-2xl shadow-xl flex flex-row justify-center ">
+            <View className="w-[95%] h-[100%] bg-[#3B2A7A] mx-auto rounded-2xl flex flex-row justify-center ">
               {
                 page === "home" ?
                   <View className="flex flex-row mx-[10%] items-center">
