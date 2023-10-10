@@ -35,18 +35,20 @@ import {
   encodeURL,
   findTransactionSignature,
   FindTransactionSignatureError,
-  createQR,
 } from '@solana/pay';
+import CreateQR from './comp/createQr';
 
 export default function App() {
 
   const [splahscreen, setSplahscreen] = useState(true);
   const [page, setPage] = useState("home") // home - scan - profile
+  const [showQr, setSowhQr] = useState(false)
+  const [url, setUrl] = useState("")
 
   const [amount, setAmount] = useState("0") //
-  const [currency, setCurrency] = useState("SOL") //
+  const [currency, setCurrency] = useState("SOL") ///Users/bm7/hackathons/solana/ontime/ontime/App.js
   const [token, setToken] = useState("EYmC6miHQ3J8u5EvQtnXAd7TQL1jpauruQXimK1jZEJZ") //
-  const connection = new Connection('https://api.devnet.solana.com');
+  // const connection = new Connection('https://api.devnet.solana.com');
   let ref = useRef(null);
 
  
@@ -80,7 +82,7 @@ export default function App() {
       payment_message,
       payment_memo
   )
-  const url = encodeURL({
+  const _url = encodeURL({
     recipient: payment_recipient,
     amount: payment_amount,
     reference: payment_reference,
@@ -88,9 +90,10 @@ export default function App() {
     message: payment_message,
     memo: payment_memo,
   });
-  console.log(url)
-  const qrCode = createQR(url);
-  qrCode.append(ref.current);
+  setSowhQr(true)
+  setUrl(_url)
+
+
   } 
   
 
@@ -172,7 +175,13 @@ export default function App() {
             <View className="rounded-md flex flex-col mx-[5%] mt-4">
               <Text className="text-sm text-[#afb9e1] font-semibold">QR Code</Text>
             </View>
-            <View className="rounded-md flex flex-col mx-[5%] h-[150px] mt-2 border" ref={ref}></View>
+            <View className="rounded-md bg-[#28146B] flex flex-row justify-center mx-[5%] py-3 mt-2 border border-[#7C5EF2]">
+              {
+                showQr ?
+                <CreateQR size={220} url={url}  />
+                : null
+              }
+            </View>
 
 
             {/* --------- button --------- */}
@@ -259,4 +268,3 @@ export default function App() {
    
   );
 }
-
