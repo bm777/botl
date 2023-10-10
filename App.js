@@ -6,6 +6,7 @@ import { Text, TextInput, View } from 'react-native';
 import { useEffect, useState, useRef } from 'react';
 import { TouchableOpacity } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
+import { SafeAreaView, ScrollView } from 'react-native';
 
 import {
     ViewfinderCircleIcon as VCIS, 
@@ -116,83 +117,136 @@ export default function App() {
         :
         <View className="w-full h-full bg-[#2F1F68] relative">
           {/* top+body */}
-          <View className="w-full h-[81%] mt-10  overflow-auto relative">
-            <View className="flex flex-row items-center mx-[5%] mt-3">
-              {/* <CLI color={"#fff"} size={30} /> */}
-              <Text className="text-white text-3xl font-semibold">Payment</Text>
-            </View>
-            {/* --------- amount --------- */}
-            <View className="rounded-md flex flex-col mx-[5%] mt-10">
-              <Text className="text-sm text-[#afb9e1] font-semibold">Equivalent amount of the transaction</Text>
-            </View>
-            <View className="border border-[#289BE3] overflow-hidden rounded-md flex flex-col mx-[5%] mt-2 bg-[#28146B]">
-              <Text className="text-[#6F7CAA] text-xm font-semibold ml-2 mt-1">Payment</Text>
-              <View className="">
-                <TextInput className="text-[#289BE3] bg-[#28146B] text-2xl font-semibold text-center mb-2" 
-                          keyboardType="numeric" 
-                          returnKeyType='done'
-                          onChangeText={val => handleAmount(val)}
-                          maxLength={3}>
-                </TextInput>
+          {/* ------ HOME ------ */}
+          {
+            page === "home" ?
+            <View className="w-full h-[81%] mt-10 relative">
+              <View className="flex flex-row items-center mx-[5%] mt-3">
+                <Text className="text-white text-3xl font-semibold">BOTL</Text>
               </View>
-            </View>
+              <SafeAreaView className="flex flex-1">
+                <ScrollView contentInsetAdjustmentBehavior='automatic'>
+                  <View className="flex flex-1 flex-col justify-center ">
+                    {/* 3B2A7A */}
+                    <View className=" w-[90%] mt-10 mx-auto bg-[#7c5ef3] shadow-xl rounded-xl">
+                      <Text className="text-[#8C9FD0] text-2xl font-base ml-5 mt-6">My balance</Text>
+                      <Text className="text-white text-5xl font-semibold ml-5 mt-4">{currency} 1.567  </Text>
+                      <View className="flex flex-row justify-end mt-5 mb-5">
+                        <View className="rounded-full bg-[#3B2A7A] mr-5">
+                          <Text className="text-white text-lg font-semibold mx-5 my-1">Estimated total</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
 
-            {/* --------- currency --------- */}
-            <View className="rounded-md flex flex-col mx-[5%] mt-4">
-              <Text className="text-sm text-[#afb9e1] font-semibold">The currency</Text>
+                  {/* transactions */}
+                  <View className="flex flex-row items-center mx-[5%] mt-10">
+                    <Text className="text-[#8C9FD0] text-3xl font-medium">Transactions</Text>
+                  </View>
+
+                  <View className="flex flex-row items-center mx-[5%] mt-1 rounded-md bg-[#28146B] shadow-xl border">
+                    <Text className="text-white text-3xl font-medium">amount</Text>
+                  </View>
+                </ScrollView>
+              </SafeAreaView>
+              
+
+
             </View>
-            <View className="border border-[#EE9F21] overflow-hidden rounded-md flex flex-col mx-[5%] mt-2 bg-[#28146B]">
-              <Text className="text-[#6F7CAA] text-xm font-semibold ml-2 mt-1">Currency</Text>
-              <View className=" text-4xl">
-                <RNPickerSelect
-                    onValueChange={value =>handleCurrency(value)}
-                    items={[
-                      { label: 'SOL', value: 'SOL' },
-                      { label: 'EUROe', value: 'EUROe' },
-                      { label: 'BONK', value: 'BONK' },
-                      { label: 'USDC', value: 'USDC' },
-                    ]}
-                    value={currency}
-                    defaultValue="euroe"
-                    style={{
-                      inputIOS: {
-                        fontSize: 24,
-                        paddingVertical: 5,
-                        paddingHorizontal: 5,
-                        borderRadius: 4,
-                        textAlign: "center",
-                        color: '#EE9F21',
-                        paddingRight: 30, // to ensure the text is not cut off in iOS
-                      },
-                      inputWeb: {
-                        fontSize: 24,
-                      }
-                    }}
-                  />
+            :
+            null
+          }
+          {/* ------ PAYMENT ------ */}
+          {
+            page === "qr" ?
+            <View className="w-full h-[81%] mt-10  overflow-auto relative">
+              <View className="flex flex-row items-center mx-[5%] mt-3">
+                {/* <CLI color={"#fff"} size={30} /> */}
+                <Text className="text-white text-3xl font-semibold">Payment</Text>
               </View>
-            </View>
-
-            <View className="rounded-md flex flex-col mx-[5%] mt-4">
-              <Text className="text-sm text-[#afb9e1] font-semibold">QR Code</Text>
-            </View>
-            <View className="rounded-md bg-[#28146B] flex flex-row justify-center mx-[5%] py-3 mt-2 border border-[#7C5EF2]">
-              {
-                showQr ?
-                <CreateQR size={220} url={url}  />
-                : null
-              }
-            </View>
-
-
-            {/* --------- button --------- */}
-            <View className=" absolute bottom-5 rounded-md flex w-full h-[8%]">
-              <TouchableOpacity onPress={generateQr}>
-                <View className="bg-[#7C5EF2] w-[95%] h-full mx-auto overflow-hidden rounded-md flex flex-row items-center justify-center"> 
-                  <Text className="text-[#fff] text-lg font-semibold">Request payment</Text>
+              {/* --------- amount --------- */}
+              <View className="rounded-md flex flex-col mx-[5%] mt-10">
+                <Text className="text-sm text-[#afb9e1] font-semibold">Equivalent amount of the transaction</Text>
+              </View>
+              <View className="border border-[#289BE3] overflow-hidden rounded-md flex flex-col mx-[5%] mt-2 bg-[#28146B]">
+                <Text className="text-[#6F7CAA] text-xm font-semibold ml-2 mt-1">Payment</Text>
+                <View className="">
+                  <TextInput className="text-[#289BE3] bg-[#28146B] text-2xl font-semibold text-center mb-2" 
+                            keyboardType="numeric" 
+                            returnKeyType='done'
+                            onChangeText={val => handleAmount(val)}
+                            maxLength={3}>
+                  </TextInput>
                 </View>
-              </TouchableOpacity>
+              </View>
+
+              {/* --------- currency --------- */}
+              <View className="rounded-md flex flex-col mx-[5%] mt-4">
+                <Text className="text-sm text-[#afb9e1] font-semibold">The currency</Text>
+              </View>
+              <View className="border border-[#EE9F21] overflow-hidden rounded-md flex flex-col mx-[5%] mt-2 bg-[#28146B]">
+                <Text className="text-[#6F7CAA] text-xm font-semibold ml-2 mt-1">Currency</Text>
+                <View className=" text-4xl">
+                  <RNPickerSelect
+                      onValueChange={value =>handleCurrency(value)}
+                      items={[
+                        { label: 'SOL', value: 'SOL' },
+                        { label: 'EUROe', value: 'EUROe' },
+                        { label: 'BONK', value: 'BONK' },
+                        { label: 'USDC', value: 'USDC' },
+                      ]}
+                      value={currency}
+                      defaultValue="euroe"
+                      style={{
+                        inputIOS: {
+                          fontSize: 24,
+                          paddingVertical: 5,
+                          paddingHorizontal: 5,
+                          borderRadius: 4,
+                          textAlign: "center",
+                          color: '#EE9F21',
+                          paddingRight: 30, // to ensure the text is not cut off in iOS
+                        },
+                        inputWeb: {
+                          fontSize: 24,
+                        }
+                      }}
+                    />
+                </View>
+              </View>
+
+              {/* --------- qrcode --------- */}
+              <View className="rounded-md flex flex-col mx-[5%] mt-4">
+                <Text className="text-sm text-[#afb9e1] font-semibold">QR Code</Text>
+              </View>
+              <View className="rounded-md bg-[#28146B] flex flex-row justify-center mx-[5%] py-3 mt-2 border border-[#7C5EF2]">
+                {
+                  showQr ?
+                  <CreateQR size={220} url={url}  />
+                  : null
+                }
+              </View>
+
+
+              {/* --------- button --------- */}
+              <View className=" absolute bottom-5 rounded-md flex w-full h-[8%]">
+                <TouchableOpacity onPress={generateQr}>
+                  <View className="bg-[#7C5EF2] w-[95%] h-full mx-auto overflow-hidden rounded-md flex flex-row items-center justify-center"> 
+                    <Text className="text-[#fff] text-lg font-semibold">Request payment</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+            :
+            null
+          }
+          {/* ------ SETTINGS ------ */}
+          {
+            page === "settings" ?
+            null
+            :
+            null
+          }
 
           {/* bottom */}
           <View className="w-[100%] h-[10%] flex absolute bottom-10">
