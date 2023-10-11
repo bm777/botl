@@ -3,7 +3,7 @@ import 'react-native-url-polyfill/auto';
 
 import { StatusBar } from 'expo-status-bar';
 import { Text, TextInput, View } from 'react-native';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { SafeAreaView, ScrollView } from 'react-native';
@@ -37,20 +37,33 @@ import CreateQR from './screens/createQr';
 import Tx from './screens/tx';
 
 export default function App() {
-
+  // view states
   const [splahscreen, setSplahscreen] = useState(true);
   const [page, setPage] = useState("home") // home - scan - profile
-  const [showQr, setSowhQr] = useState(false)
-  const [url, setUrl] = useState("")
+  const splTokens = {
+      "EUROe": "2VhjJ9WxaGC3EZFwJG9BDUs9KxKCAjQY4vgd1qxgYWVg", 
+      "BONK": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263", 
+      "USDC": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", 
+      "SOL": "---"}
+  // home states
   const [transactions, setTransactions] = useState([1,2,3,4,5,6,7,8,9,0])
-
+  // qr states
+  const [url, setUrl] = useState("")
+  const [showQr, setSowhQr] = useState(false)
   const [amount, setAmount] = useState("0.0001") //
-  const [currency, setCurrency] = useState("EUROe") ///Users/bm7/hackathons/solana/ontime/ontime/App.js
+  const [currency, setCurrency] = useState(defaultCurrency) 
   const [token, setToken] = useState("EYmC6miHQ3J8u5EvQtnXAd7TQL1jpauruQXimK1jZEJZ") //
   // const connection = new Connection('https://api.devnet.solana.com');
-  let ref = useRef(null);
+  // settings states
+  const [defaultCurrency, setDefaultCurrency] = useState("EUROe") 
+  const [solana, setSolana] = useState("") 
+  const [euroe, setEuroe] = useState("")
+  const [bonk, setBonk] = useState("")
+  const [usdc, setUsdc] = useState("")
+  const [sol, setSol] = useState("")
 
- 
+
+ //useeffect
   useEffect(() =>  {
     const interval = setInterval(() => {
       setSplahscreen(false)
@@ -64,6 +77,11 @@ export default function App() {
   const handleQr = () => { setPage("qr")}
   const handleSettings = () => { setPage("settings")}
   const handleCurrency = (cur) => { setCurrency(cur)}
+  const handleDefaultCurrency = (cur) => { setDefaultCurrency(cur)}
+  const handleSolana = (cur) => { setSolana(cur)}
+  const handleEuroe = (cur) => { setEuroe(cur)}
+  const handleBonk = (cur) => { setBonk(cur)}
+  const handleUsdc = (cur) => { setUsdc(cur)}
   const handleAmount = (value) => { setAmount(value)}
   const generateQr = () => {
     const payment_recipient = new PublicKey(token); // -> to change with euroe or bonk currency
@@ -96,10 +114,6 @@ export default function App() {
   } 
   
 
-  
-
-
-
   return (
     <View className="flex-1 items-center justify-center bg-[#2F1F68]">
       {
@@ -109,7 +123,7 @@ export default function App() {
             <Text className=" font-medium text-6xl text-white animate-bounce">botl</Text>
           </View>
           
-          <Text className="font-light text-xl text-center text-[#8A9CCE] mt-10 px-5">Clean your house for free and get rewarded</Text>
+          <Text className="font-light text-xl text-center text-[#8A9CCE] mt-10 px-5">Your instant payment</Text>
           <StatusBar style="auto" />
         </View>
         :
@@ -160,9 +174,6 @@ export default function App() {
                   }
                 </ScrollView>
               </SafeAreaView>
-              
-
-
             </View>
             :
             null
@@ -235,7 +246,7 @@ export default function App() {
                 {
                   showQr ?
                   <CreateQR size={220} url={url}  />
-                  : null
+                  : <View className="h-[220px]"></View>
                 }
               </View>
 
@@ -255,7 +266,114 @@ export default function App() {
           {/* ------ SETTINGS ------ */}
           {
             page === "settings" ?
-            null
+            <View className="w-full h-[81%] mt-10 relative">
+              <View className="flex flex-row items-center mx-[5%] mt-3">
+                <Text className="text-white text-3xl font-semibold">Settings</Text>
+              </View>
+
+              {/* --------- currency --------- */}
+              <View className="rounded-md flex flex-col mx-[5%] mt-4">
+                <Text className="text-sm text-[#afb9e1] font-semibold">Default currency</Text>
+              </View>
+              <View className="border border-[#EE9F21] overflow-hidden rounded-md flex flex-col mx-[5%] mt-2 bg-[#28146B]">
+                <Text className="text-[#6F7CAA] text-xm font-semibold ml-2 mt-1">Currency</Text>
+                <View className=" text-4xl">
+                  <RNPickerSelect
+                      onValueChange={value =>handleDefaultCurrency(value)}
+                      items={[
+                        { label: 'SOL', value: 'SOL' },
+                        { label: 'EUROe', value: 'EUROe' },
+                        { label: 'BONK', value: 'BONK' },
+                        { label: 'USDC', value: 'USDC' },
+                      ]}
+                      value={defaultCurrency}
+                      defaultValue="euroe"
+                      style={{
+                        inputIOS: {
+                          fontSize: 24,
+                          paddingVertical: 5,
+                          paddingHorizontal: 5,
+                          borderRadius: 4,
+                          textAlign: "center",
+                          color: '#EE9F21',
+                          paddingRight: 30, // to ensure the text is not cut off in iOS
+                        },
+                        inputWeb: {
+                          fontSize: 24,
+                        }
+                      }}
+                    />
+                </View>
+              </View>
+
+              {/* --------- solana address --------- */}
+              <View className="rounded-md flex flex-col mx-[5%] mt-7">
+                <Text className="text-sm text-[#afb9e1] font-semibold">Solana's adress</Text>
+              </View>
+              <View className="border border-[#289BE3] overflow-hidden rounded-md flex flex-col mx-[5%] mt-2 bg-[#28146B]">
+                <Text className="text-[#6F7CAA] text-xm font-semibold ml-2 mt-1">SOLANA</Text>
+                <View className="">
+                  <TextInput className="text-[#289BE3] bg-[#28146B] text-2xl font-semibold text-center mb-2" 
+                            keyboardType="default" 
+                            returnKeyType='done'
+                            defaultValue=''
+                            onChangeText={val => handleSolana(val)}
+                            >
+                  </TextInput>
+                </View>
+              </View>
+
+              {/* --------- Euroe address --------- */}
+              <View className="rounded-md flex flex-col mx-[5%] mt-2">
+                <Text className="text-sm text-[#afb9e1] font-semibold">Euroe's adress</Text>
+              </View>
+              <View className="border border-[#289BE3] overflow-hidden rounded-md flex flex-col mx-[5%] mt-2 bg-[#28146B]">
+                <Text className="text-[#6F7CAA] text-xm font-semibold ml-2 mt-1">EUROe</Text>
+                <View className="">
+                  <TextInput className="text-[#289BE3] bg-[#28146B] text-2xl font-semibold text-center mb-2" 
+                            keyboardType="default" 
+                            returnKeyType='done'
+                            defaultValue=''
+                            onChangeText={val => handleEuroe(val)}
+                            >
+                  </TextInput>
+                </View>
+              </View>
+
+              {/* --------- Bonk address --------- */}
+              <View className="rounded-md flex flex-col mx-[5%] mt-2">
+                <Text className="text-sm text-[#afb9e1] font-semibold">Bonk's adress</Text>
+              </View>
+              <View className="border border-[#289BE3] overflow-hidden rounded-md flex flex-col mx-[5%] mt-2 bg-[#28146B]">
+                <Text className="text-[#6F7CAA] text-xm font-semibold ml-2 mt-1">BONK</Text>
+                <View className="">
+                  <TextInput className="text-[#289BE3] bg-[#28146B] text-2xl font-semibold text-center mb-2" 
+                            keyboardType="default"
+                            returnKeyType='done'
+                            defaultValue=''
+                            onChangeText={val => handleBonk(val)}
+                            >
+                  </TextInput>
+                </View>
+              </View>
+
+              {/* --------- Usdc address --------- */}
+              <View className="rounded-md flex flex-col mx-[5%] mt-2">
+                <Text className="text-sm text-[#afb9e1] font-semibold">Usdc's adress</Text>
+              </View>
+              <View className="border border-[#289BE3] overflow-hidden rounded-md flex flex-col mx-[5%] mt-2 bg-[#28146B]">
+                <Text className="text-[#6F7CAA] text-xm font-semibold ml-2 mt-1">USDC</Text>
+                <View className="">
+                  <TextInput className="text-[#289BE3] bg-[#28146B] text-2xl font-semibold text-center mb-2" 
+                            keyboardType="default" 
+                            returnKeyType='done'
+                            defaultValue=''
+                            onChangeText={val => handleUsdc(val)}
+                            >
+                  </TextInput>
+                </View>
+              </View>
+            </View>
             :
             null
           }
