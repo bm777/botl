@@ -52,10 +52,11 @@ export default function App() {
   const [showQr, setSowhQr] = useState(false)
   const [amount, setAmount] = useState("0.0001") //
   const [currency, setCurrency] = useState(defaultCurrency) 
-  const [solanaAdr, setSolanaAdr] = useState("EYmC6miHQ3J8u5EvQtnXAd7TQL1jpauruQXimK1jZEJZ") //
+  
   // const connection = new Connection('https://api.devnet.solana.com');
   // settings states
   const [defaultCurrency, setDefaultCurrency] = useState("EUROe") 
+  const [solanaAdr, setSolanaAdr] = useState("EYmC6miHQ3J8u5EvQtnXAd7TQL1jpauruQXimK1jZEJZ") // solana address
 
  //useeffect
   useEffect(() =>  {
@@ -72,6 +73,7 @@ export default function App() {
   const handleSettings = () => { setPage("settings")}
   const handleCurrency = (cur) => { setCurrency(cur)}
   const handleDefaultCurrency = (cur) => { setDefaultCurrency(cur)}
+  const handleDefaultSolana = (adr) => { setSolanaAdr(adr)}
   const handleSolana = (cur) => { setSolanaAdr(cur)}
   const handleAmount = (value) => { setAmount(value)}
   const generateQr = () => {
@@ -327,7 +329,7 @@ export default function App() {
                             keyboardType="default" 
                             returnKeyType='done'
                             defaultValue=''
-                            onChangeText={val => handleSolana(val)}
+                            onChangeText={val => handleDefaultSolana(val)}
                             >
                   </TextInput>
                 </View>
