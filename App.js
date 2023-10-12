@@ -31,10 +31,12 @@ import {
   Connection,
 } from '@solana/web3.js';
 import {
-  encodeURL,
+  FindReferenceError,
+  encodeURL, findReference,
 } from '@solana/pay';
 import CreateQR from './screens/createQr';
 import Tx from './screens/tx';
+import { getTransactions } from './methods';
 
 export default function App() {
   // view states
@@ -46,14 +48,14 @@ export default function App() {
       "USDC": new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"), 
       "SOL": "---"}
   // home states
-  const [transactions, setTransactions] = useState([1,2,3,4,5,6,7,8,9,0])
+  const [transactions, setTransactions] = useState([1,2])
   // qr states
   const [url, setUrl] = useState("")
   const [showQr, setSowhQr] = useState(false)
   const [amount, setAmount] = useState("0.0001") //
   const [currency, setCurrency] = useState(defaultCurrency) 
   
-  // const connection = new Connection('https://api.devnet.solana.com');
+  const connection = new Connection('http://rpc.solscan.com');
   // settings states
   const [defaultCurrency, setDefaultCurrency] = useState("EUROe") 
   const [solanaAdr, setSolanaAdr] = useState("EYmC6miHQ3J8u5EvQtnXAd7TQL1jpauruQXimK1jZEJZ") // solana address
@@ -68,7 +70,13 @@ export default function App() {
   }, []);
 
   // handlers
-  const handleHome = () => { setPage("home")}
+  const handleHome = async () => { 
+    console.log("before txs")
+    setPage("home"); 
+    
+    const txs = await getTransactions(solanaAdr)
+    // console.log("txs", txs)
+ }
   const handleQr = () => { setPage("qr")}
   const handleSettings = () => { setPage("settings")}
   const handleCurrency = (cur) => { setCurrency(cur)}
@@ -84,16 +92,7 @@ export default function App() {
     const payment_message = "Botl transaction";
     let r = (Math.random() + 1).toString(36).substring(7);
     const payment_memo = '#' + r;
-  //   console.log(
-  //     payment_recipient,
-  //     payment_amount,
-  //     payment_reference,
-  //     splTokens[currency],
-  //     currency,
-  //     payment_label,
-  //     payment_message,
-  //     payment_memo
-  // )
+
   const _url = () => {
     if(currency === "SOL") {
       console.log("sol splToken")
@@ -121,6 +120,21 @@ export default function App() {
   console.log(_url())
   setSowhQr(true)
   setUrl(_url())
+
+  // Find the transaction in the blockchain
+  const interval = setInterval(async () => {
+    console.log("Checking for transaction...")
+    try {
+      signatureInfo = await findReference(connection, payment_reference, {finality: 'confirmed'});
+      console.log("\n Signature found:", signatureInfo.signature)
+      clearInterval(interval)
+    } catch (error) {
+      if(!(error instanceof FindReferenceError)){
+        console.error(error)
+        clearInterval(interval)
+      }
+    }
+    }, 250)
 
 
   } 
