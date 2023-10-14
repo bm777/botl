@@ -32,7 +32,7 @@ import {
 } from '@solana/web3.js';
 import {
   FindReferenceError,
-  encodeURL, findReference,
+  encodeURL,
 } from '@solana/pay';
 import CreateQR from './screens/createQr';
 import Tx from './screens/tx';
@@ -52,7 +52,7 @@ export default function App() {
   // qr states
   const [url, setUrl] = useState("")
   const [showQr, setSowhQr] = useState(false)
-  const [amount, setAmount] = useState("0.0001") //
+  const [amount, setAmount] = useState("0.1") //
   const [currency, setCurrency] = useState(defaultCurrency) 
   
   const connection = new Connection('http://rpc.solscan.com');
@@ -71,11 +71,10 @@ export default function App() {
 
   // handlers
   const handleHome = async () => { 
-    console.log("before txs")
     setPage("home"); 
     
     const txs = await getTransactions(solanaAdr)
-    // console.log("txs", txs)
+    console.log("txs", txs)
  }
   const handleQr = () => { setPage("qr")}
   const handleSettings = () => { setPage("settings")}
@@ -125,8 +124,8 @@ export default function App() {
   const interval = setInterval(async () => {
     console.log("Checking for transaction...")
     try {
-      signatureInfo = await findReference(connection, payment_reference, {finality: 'confirmed'});
-      console.log("\n Signature found:", signatureInfo.signature)
+      // signatureInfo = await findReference(connection, payment_reference, {finality: 'confirmed'});
+      console.log("\n Signature found:")
       clearInterval(interval)
     } catch (error) {
       if(!(error instanceof FindReferenceError)){
@@ -220,9 +219,10 @@ export default function App() {
                 <Text className="text-[#6F7CAA] text-xm font-semibold ml-2 mt-1">Payment</Text>
                 <View className="">
                   <TextInput className="text-[#289BE3] bg-[#28146B] text-2xl font-semibold text-center mb-2" 
-                            keyboardType="numeric" 
+                            keyboardType="decimal-pad" 
                             returnKeyType='done'
-                            defaultValue='0.00001'
+                            defaultValue='0.1'
+                            autoCapitalize="words"
                             onChangeText={val => handleAmount(val)}
                             maxLength={7}>
                   </TextInput>
