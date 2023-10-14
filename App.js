@@ -221,8 +221,8 @@ export default function App() {
                 <Text className="text-white text-3xl font-semibold">Payment</Text>
               </View>
               {/* --------- amount --------- */}
-              <SafeAreaView className="flex flex-1">
-                <ScrollView contentInsetAdjustmentBehavior='automatic'>
+              {/* <SafeAreaView className="flex flex-1"> */}
+                <ScrollView contentInsetAdjustmentBehavior='automatic' className="flex flex-1">
                   <View className="rounded-md flex flex-col mx-[5%] mt-10">
                     <Text className="text-sm text-[#afb9e1] font-semibold">Equivalent amount of the transaction</Text>
                   </View>
@@ -287,7 +287,7 @@ export default function App() {
                     }
                   </View>
                 </ScrollView>
-              </SafeAreaView>
+              {/* </SafeAreaView> */}
 
               
 
