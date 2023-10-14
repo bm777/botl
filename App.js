@@ -36,7 +36,7 @@ import {
 } from '@solana/pay';
 import CreateQR from './screens/createQr';
 import Tx from './screens/tx';
-import { getTransactions } from './methods';
+import { getBalance, getTransactions } from './methods';
 
 export default function App() {
   // view states
@@ -53,6 +53,7 @@ export default function App() {
   const [url, setUrl] = useState("")
   const [showQr, setSowhQr] = useState(false)
   const [amount, setAmount] = useState("0.1") //
+  const [balance, setBalance] = useState("") //
   const [currency, setCurrency] = useState(defaultCurrency) 
   
   const connection = new Connection('http://rpc.solscan.com');
@@ -62,8 +63,14 @@ export default function App() {
 
  //useeffect
   useEffect(() =>  {
+    getBalance(solanaAdr).then((res) => {
+      setBalance(res)
+    } )
     const interval = setInterval(() => {
       setSplahscreen(false)
+      // getBalance(solanaAdr).then((res) => {
+      //   setBalance(res)
+      // } )
 
     }, 1700); // 1700
     return () => clearInterval(interval);
@@ -74,7 +81,7 @@ export default function App() {
     setPage("home"); 
     
     const txs = await getTransactions(solanaAdr)
-    console.log("txs", txs)
+    // console.log("txs", txs)
  }
   const handleQr = () => { setPage("qr")}
   const handleSettings = () => { setPage("settings")}
@@ -167,10 +174,10 @@ export default function App() {
                     {/* 3B2A7A */}
                     <View className=" w-[90%] mt-10 mx-auto bg-[#7c5ef3] rounded-xl">
                       <Text className="text-[#8C9FD0] text-2xl font-base ml-5 mt-6">My balance</Text>
-                      <Text className="text-white text-5xl font-semibold ml-5 mt-4">{defaultCurrency} 1.567  </Text>
+                      <Text className="text-white text-5xl font-semibold ml-5 mt-4">SOL {balance.toString().slice(0, 8)} </Text>
                       <View className="flex flex-row justify-end mt-5 mb-5">
                         <View className="rounded-full bg-[#3B2A7A] mr-5">
-                          <Text className="text-white text-lg font-semibold mx-5 my-1">Estimated total</Text>
+                          <Text className="text-white text-lg font-semibold mx-5 my-1">Estimated total: ${(balance * 22).toString().slice(0, 6)}</Text>
                         </View>
                       </View>
                     </View>
