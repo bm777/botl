@@ -219,69 +219,75 @@ export default function App() {
                 <Text className="text-white text-3xl font-semibold">Payment</Text>
               </View>
               {/* --------- amount --------- */}
-              <View className="rounded-md flex flex-col mx-[5%] mt-10">
-                <Text className="text-sm text-[#afb9e1] font-semibold">Equivalent amount of the transaction</Text>
-              </View>
-              <View className="border border-[#289BE3] overflow-hidden rounded-md flex flex-col mx-[5%] mt-2 bg-[#28146B]">
-                <Text className="text-[#6F7CAA] text-xm font-semibold ml-2 mt-1">Payment</Text>
-                <View className="">
-                  <TextInput className="text-[#289BE3] bg-[#28146B] text-2xl font-semibold text-center mb-2" 
-                            keyboardType="decimal-pad" 
-                            returnKeyType='done'
-                            defaultValue='0.1'
-                            autoCapitalize="words"
-                            onChangeText={val => handleAmount(val)}
-                            maxLength={7}>
-                  </TextInput>
-                </View>
-              </View>
+              <SafeAreaView className="flex flex-1">
+                <ScrollView contentInsetAdjustmentBehavior='automatic'>
+                  <View className="rounded-md flex flex-col mx-[5%] mt-10">
+                    <Text className="text-sm text-[#afb9e1] font-semibold">Equivalent amount of the transaction</Text>
+                  </View>
+                  <View className="border border-[#289BE3] overflow-hidden rounded-md flex flex-col mx-[5%] mt-2 bg-[#28146B]">
+                    <Text className="text-[#6F7CAA] text-xm font-semibold ml-2 mt-1">Payment</Text>
+                    <View className="">
+                      <TextInput className="text-[#289BE3] bg-[#28146B] text-2xl font-semibold text-center mb-2" 
+                                keyboardType="decimal-pad" 
+                                returnKeyType='done'
+                                defaultValue='0.1'
+                                autoCapitalize="words"
+                                onChangeText={val => handleAmount(val)}
+                                maxLength={7}>
+                      </TextInput>
+                    </View>
+                  </View>
 
-              {/* --------- currency --------- */}
-              <View className="rounded-md flex flex-col mx-[5%] mt-4">
-                <Text className="text-sm text-[#afb9e1] font-semibold">The currency</Text>
-              </View>
-              <View className="border border-[#EE9F21] overflow-hidden rounded-md flex flex-col mx-[5%] mt-2 bg-[#28146B]">
-                <Text className="text-[#6F7CAA] text-xm font-semibold ml-2 mt-1">Currency</Text>
-                <View className=" text-4xl">
-                  <RNPickerSelect
-                      onValueChange={value =>handleCurrency(value)}
-                      items={[
-                        { label: 'SOL', value: 'SOL' },
-                        { label: 'EUROe', value: 'EUROe' },
-                        { label: 'BONK', value: 'BONK' },
-                        { label: 'USDC', value: 'USDC' },
-                      ]}
-                      value={currency}
-                      defaultValue="euroe"
-                      style={{
-                        inputIOS: {
-                          fontSize: 24,
-                          paddingVertical: 5,
-                          paddingHorizontal: 5,
-                          borderRadius: 4,
-                          textAlign: "center",
-                          color: '#EE9F21',
-                          paddingRight: 30, // to ensure the text is not cut off in iOS
-                        },
-                        inputWeb: {
-                          fontSize: 24,
-                        }
-                      }}
-                    />
-                </View>
-              </View>
+                  {/* --------- currency --------- */}
+                  <View className="rounded-md flex flex-col mx-[5%] mt-4">
+                    <Text className="text-sm text-[#afb9e1] font-semibold">The currency</Text>
+                  </View>
+                  <View className="border border-[#EE9F21] overflow-hidden rounded-md flex flex-col mx-[5%] mt-2 bg-[#28146B]">
+                    <Text className="text-[#6F7CAA] text-xm font-semibold ml-2 mt-1">Currency</Text>
+                    <View className=" text-4xl">
+                      <RNPickerSelect
+                          onValueChange={value =>handleCurrency(value)}
+                          items={[
+                            { label: 'SOL', value: 'SOL' },
+                            { label: 'EUROe', value: 'EUROe' },
+                            { label: 'BONK', value: 'BONK' },
+                            { label: 'USDC', value: 'USDC' },
+                          ]}
+                          value={currency}
+                          defaultValue="euroe"
+                          style={{
+                            inputIOS: {
+                              fontSize: 24,
+                              paddingVertical: 5,
+                              paddingHorizontal: 5,
+                              borderRadius: 4,
+                              textAlign: "center",
+                              color: '#EE9F21',
+                              paddingRight: 30, // to ensure the text is not cut off in iOS
+                            },
+                            inputWeb: {
+                              fontSize: 24,
+                            }
+                          }}
+                        />
+                    </View>
+                  </View>
 
-              {/* --------- qrcode --------- */}
-              <View className="rounded-md flex flex-col mx-[5%] mt-4">
-                <Text className="text-sm text-[#afb9e1] font-semibold">QR Code</Text>
-              </View>
-              <View className="rounded-md bg-[#28146B] flex flex-row justify-center mx-[5%] py-3 mt-2 border border-[#7C5EF2]">
-                {
-                  showQr ?
-                  <CreateQR size={220} url={url}  />
-                  : <View className="h-[220px]"></View>
-                }
-              </View>
+                  {/* --------- qrcode --------- */}
+                  <View className="rounded-md flex flex-col mx-[5%] mt-4">
+                    <Text className="text-sm text-[#afb9e1] font-semibold">QR Code</Text>
+                  </View>
+                  <View className="rounded-md bg-[#28146B] flex flex-row justify-center mx-[5%] py-3 mt-2 border border-[#7C5EF2]">
+                    {
+                      showQr ?
+                      <CreateQR size={220} url={url}  />
+                      : <View className="h-[220px]"></View>
+                    }
+                  </View>
+                </ScrollView>
+              </SafeAreaView>
+
+              
 
 
               {/* --------- button --------- */}
@@ -296,6 +302,11 @@ export default function App() {
             :
             null
           }
+
+
+
+
+
           {/* ------ SETTINGS ------ */}
           {
             page === "settings" ?
