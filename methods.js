@@ -1,3 +1,4 @@
+
 var myHeader = new Headers();
 myHeader.append("x-api-key", "g0ubPHNPikIBVNuo");
 var requestOptions = {
@@ -22,8 +23,26 @@ export const getTransactions = async (adr) => {
     return tx
 
 }
-export const getBalance = async (adr) => {
+
+export const getSolBalance = async (adr) => {
     const response = await fetch("https://api.shyft.to/sol/v1/wallet/balance?network=mainnet-beta&wallet="+adr+"&tx_num=7", requestOptions)
     const data = await response.json()
     return data.result.balance
+}
+
+export const getBalance = async (adr) => {
+    const response = await fetch("https://api.shyft.to/sol/v1/wallet/all_tokens?network=mainnet-beta&wallet="+adr, requestOptions)
+    const data = await response.json()
+    let balance = 0
+    for(let i=0; i<data.result.length; i++){
+        // console.log("Token: -> ",data.result[i].info.symbol)
+
+        if(data.result[i].info.symbol === "EUROe") balance += data.result[i].balance * 1.05
+        if(data.result[i].info.symbol === "Bonk") balance += data.result[i].balance * 0.00000018
+        if(data.result[i].info.symbol === "USDC") balance += data.result[i].balance * 1
+        if(data.result[i].info.symbol === "USDT") balance += data.result[i].balance * 1
+    }
+
+    return balance + await getSolBalance(adr)
+
 }

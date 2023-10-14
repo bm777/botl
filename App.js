@@ -3,10 +3,12 @@ import 'react-native-url-polyfill/auto';
 
 import { StatusBar } from 'expo-status-bar';
 import { Text, TextInput, View } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { TouchableOpacity } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { SafeAreaView, ScrollView } from 'react-native';
+
+import * as Notifications from 'expo-notifications';
 
 import {
     ViewfinderCircleIcon as VCIS,
@@ -36,7 +38,18 @@ import {
 } from '@solana/pay';
 import CreateQR from './screens/createQr';
 import Tx from './screens/tx';
-import { getBalance, getTransactions } from './methods';
+import { getBalance, getTransactions,
+} from './methods';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
+
 
 export default function App() {
   // view states
@@ -47,6 +60,10 @@ export default function App() {
       "BONK": new PublicKey("DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"),
       "USDC": new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"),
       "SOL": "---"}
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
   // home states
   const [transactions, setTransactions] = useState([])
   // qr states
@@ -66,6 +83,7 @@ export default function App() {
     getBalance(solanaAdr).then((res) => {
       setBalance(res)
     } )
+    
     const interval = setInterval(() => {
       setSplahscreen(false)
       // getBalance(solanaAdr).then((res) => {
@@ -81,10 +99,11 @@ export default function App() {
     setPage("home"); 
     getBalance(solanaAdr).then((res) => {
       setBalance(res)
-    } )
+    })
     const txs = await getTransactions(solanaAdr)
+    console.log(txs)
     // ------------
-    if(txs.length !== 0) setTransactions(txs)
+    setTransactions(txs)
     // ------------
  }
   const handleQr = () => { setPage("qr")}
@@ -168,7 +187,7 @@ export default function App() {
           {/* ------ HOME ------ */}
           {
             page === "home" ?
-            <View className="w-full h-[81%] mt-10 relative">
+            <View className="w-full h-[81%] mt-10 relative ">
               <View className="flex flex-row items-center mx-[5%] mt-3">
                 <Text className="text-white text-3xl font-semibold">BOTL</Text>
               </View>
@@ -178,10 +197,10 @@ export default function App() {
                     {/* 3B2A7A */}
                     <View className=" w-[90%] mt-10 mx-auto bg-[#7c5ef3] rounded-xl">
                       <Text className="text-[#8C9FD0] text-2xl font-base ml-5 mt-6">My balance</Text>
-                      <Text className="text-white text-5xl font-semibold ml-5 mt-4">SOL {balance.toString().slice(0, 8)} </Text>
+                      <Text className="text-white text-5xl font-semibold ml-5 mt-4">$ {balance.toString().slice(0, 8)} </Text>
                       <View className="flex flex-row justify-end mt-5 mb-5">
                         <View className="rounded-full bg-[#3B2A7A] mr-5">
-                          <Text className="text-white text-lg font-semibold mx-5 my-1">Estimated total: ${(balance * 22).toString().slice(0, 6)}</Text>
+                          <Text className="text-white text-lg font-semibold mx-5 my-1">Estimated total of all token</Text>
                         </View>
                       </View>
                     </View>
@@ -194,7 +213,7 @@ export default function App() {
                   
                   {/* tx */}
                   {
-                    transactions.length !== 0 ?
+                    transactions.length !== undefined ?
                       <>
                       {
                         transactions.map((tx, id) => {
@@ -204,7 +223,7 @@ export default function App() {
                       </>
                       :
                       <View className="mx-[5%] mt-3">
-                        <Text className=" text-[#8C9FD0] mt-1">No transaction</Text>
+                        <Text className=" text-[#8C9FD0] mt-1">No transaction or Loading</Text>
                       </View>
 
                   }
@@ -223,9 +242,9 @@ export default function App() {
                 <Text className="text-white text-3xl font-semibold">Payment</Text>
               </View>
               {/* --------- amount --------- */}
-              {/* <SafeAreaView className="flex flex-1"> */}
-                <ScrollView contentInsetAdjustmentBehavior='automatic' className="flex flex-1">
-                  <View className="rounded-md flex flex-col mx-[5%] mt-10">
+              <SafeAreaView className=" flex-1 ">
+                <ScrollView >
+                  <View className="rounded-md flex flex-col mx-[5%] mt-3">
                     <Text className="text-sm text-[#afb9e1] font-semibold">Equivalent amount of the transaction</Text>
                   </View>
                   <View className="border border-[#289BE3] overflow-hidden rounded-md flex flex-col mx-[5%] mt-2 bg-[#28146B]">
@@ -289,7 +308,7 @@ export default function App() {
                     }
                   </View>
                 </ScrollView>
-              {/* </SafeAreaView> */}
+              </SafeAreaView>
 
               
 

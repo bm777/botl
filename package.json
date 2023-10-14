@@ -16,6 +16,8 @@
     "@solana/web3.js": "^1.78.7",
     "bignumber.js": "^9.1.2",
     "expo": "^49.0.13",
+    "expo-device": "~5.4.0",
+    "expo-notifications": "~0.20.1",
     "expo-status-bar": "~1.4.4",
     "nativewind": "^2.0.11",
     "react": "18.2.0",
