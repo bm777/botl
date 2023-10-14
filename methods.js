@@ -16,9 +16,6 @@ export const getTransactions = async (adr) => {
         if(infos["amount"] !== undefined){
             const amount = infos["amount"]
             const sender = infos["sender"]
-            // console.log("===============>",)
-            // console.log("sender ->",sender)
-            // console.log("amount ->",amount)
             tx.push({sender: sender, amount: amount})
         }else console.log("===============> No usefull information found")
     }
