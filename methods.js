@@ -10,11 +10,19 @@ export const getTransactions = async (adr) => {
     const response = await fetch("https://api.shyft.to/sol/v1/wallet/transaction_history?network=mainnet-beta&wallet="+adr, requestOptions)
     const data = await response.json()
     const result = data.result
+    const tx = []
     for(let i=0; i<result.length; i++){
-        console.log("===============>",result[i]["actions"])
+        const infos = result[i]["actions"][0]["info"]
+        if(infos["amount"] !== undefined){
+            const amount = infos["amount"]
+            const sender = infos["sender"]
+            // console.log("===============>",)
+            // console.log("sender ->",sender)
+            // console.log("amount ->",amount)
+            tx.push({sender: sender, amount: amount})
+        }else console.log("===============> No usefull information found")
     }
-
-    return data
+    return tx
 
 }
 export const getBalance = async (adr) => {

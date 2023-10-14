@@ -43,12 +43,12 @@ export default function App() {
   const [splahscreen, setSplahscreen] = useState(true);
   const [page, setPage] = useState("home") // home - scan - profile
   const splTokens = {
-      "EUROe": new PublicKey("2VhjJ9WxaGC3EZFwJG9BDUs9KxKCAjQY4vgd1qxgYWVg"), 
-      "BONK": new PublicKey("DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"), 
-      "USDC": new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"), 
+      "EUROe": new PublicKey("2VhjJ9WxaGC3EZFwJG9BDUs9KxKCAjQY4vgd1qxgYWVg"),
+      "BONK": new PublicKey("DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"),
+      "USDC": new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"),
       "SOL": "---"}
   // home states
-  const [transactions, setTransactions] = useState([1,2])
+  const [transactions, setTransactions] = useState([])
   // qr states
   const [url, setUrl] = useState("")
   const [showQr, setSowhQr] = useState(false)
@@ -81,7 +81,9 @@ export default function App() {
     setPage("home"); 
     
     const txs = await getTransactions(solanaAdr)
-    // console.log("txs", txs)
+    // ------------
+    if(txs.length !== 0) setTransactions(txs)
+    // ------------
  }
   const handleQr = () => { setPage("qr")}
   const handleSettings = () => { setPage("settings")}
@@ -194,7 +196,7 @@ export default function App() {
                       <>
                       {
                         transactions.map((tx, id) => {
-                          return <Tx key={id} adress={solanaAdr} amount={0.05345535} date={"10/10/2023"} currency={currency} />
+                          return <Tx key={id} adress={tx.sender} amount={tx.amount} date={"--/--/----"} currency={currency} />
                         })
                       }
                       </>
