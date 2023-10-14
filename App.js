@@ -54,7 +54,7 @@ export default function App() {
   const [showQr, setSowhQr] = useState(false)
   const [amount, setAmount] = useState("0.1") //
   const [balance, setBalance] = useState("") //
-  const [currency, setCurrency] = useState(defaultCurrency) 
+  const [currency, setCurrency] = useState(defaultCurrency)
   
   const connection = new Connection('http://rpc.solscan.com');
   // settings states
@@ -79,7 +79,9 @@ export default function App() {
   // handlers
   const handleHome = async () => { 
     setPage("home"); 
-    
+    getBalance(solanaAdr).then((res) => {
+      setBalance(res)
+    } )
     const txs = await getTransactions(solanaAdr)
     // ------------
     if(txs.length !== 0) setTransactions(txs)
