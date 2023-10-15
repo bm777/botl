@@ -22,12 +22,12 @@ const Tx = (props) => {
                         <Text className=" text-sm font-semibold text-[#8C9FD0]">{adress.slice(0,15)} • • •</Text>
                     </View>
                     <View className="">
-                        <Text className=" text-xs text-[#8C9FD0] mt-1">Received • {date}</Text>
+                        <Text className=" text-xs text-[#8C9FD0] mt-1">Received • {date.slice(0, 19)}</Text>
                     </View>
                 </View>
             </View>
             <View className="">
-                <Text className="text-[#8C9FD0] text-xl font-medium">{currency} {amount.toString().slice(0, 5)}</Text>
+                <Text className="text-[#8C9FD0] text-xl font-medium">{currency} {amount.toString().slice(0, 4)}</Text>
             </View>
         </View>
     )

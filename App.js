@@ -8,8 +8,6 @@ import { TouchableOpacity } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { SafeAreaView, ScrollView } from 'react-native';
 
-import * as Notifications from 'expo-notifications';
-
 import {
     ViewfinderCircleIcon as VCIS,
     HomeIcon as HIS, 
@@ -34,20 +32,13 @@ import {
 } from '@solana/web3.js';
 import {
   FindReferenceError,
+  findReference,
   encodeURL,
 } from '@solana/pay';
 import CreateQR from './screens/createQr';
 import Tx from './screens/tx';
-import { getBalance, getTransactions,
+import { getBalance, getTransactions, sleep, establishConnection
 } from './methods';
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
 
 
 
@@ -55,15 +46,14 @@ export default function App() {
   // view states
   const [splahscreen, setSplahscreen] = useState(true);
   const [page, setPage] = useState("home") // home - scan - profile
+  const [requested, setRequested] = useState(false)
+  const [paymentStatus, setPaymentStatus] = useState("pending") //pending - success - error
   const splTokens = {
       "EUROe": new PublicKey("2VhjJ9WxaGC3EZFwJG9BDUs9KxKCAjQY4vgd1qxgYWVg"),
       "BONK": new PublicKey("DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"),
       "USDC": new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"),
-      "SOL": "---"}
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
+      "SOL": "---"
+    }
   // home states
   const [transactions, setTransactions] = useState([])
   // qr states
@@ -72,18 +62,26 @@ export default function App() {
   const [amount, setAmount] = useState("0.1") //
   const [balance, setBalance] = useState("") //
   const [currency, setCurrency] = useState(defaultCurrency)
+  const [reference, setReference] = useState("")
   
   const connection = new Connection('http://rpc.solscan.com');
   // settings states
   const [defaultCurrency, setDefaultCurrency] = useState("EUROe") 
-  const [solanaAdr, setSolanaAdr] = useState("EYmC6miHQ3J8u5EvQtnXAd7TQL1jpauruQXimK1jZEJZ") // solana address
+  const [solanaAdr, setSolanaAdr] = useState("BF4N3pDDpmX5FyHqGnanaNBnw4iMNtLCD2trUsaG2tRC") // solana address
 
  //useeffect
   useEffect(() =>  {
     getBalance(solanaAdr).then((res) => {
+      sleep(1500)
       setBalance(res)
     } )
-    
+    const loadTx = async () => {
+      const txs = await getTransactions(solanaAdr)
+      setTransactions(txs)
+    }
+    sleep(1500)
+    loadTx()
+
     const interval = setInterval(() => {
       setSplahscreen(false)
       // getBalance(solanaAdr).then((res) => {
@@ -92,6 +90,9 @@ export default function App() {
 
     }, 1700); // 1700
     return () => clearInterval(interval);
+    
+    
+
   }, []);
 
   // handlers
@@ -117,6 +118,7 @@ export default function App() {
     const payment_recipient = new PublicKey(solanaAdr); // -> to change with euroe or bonk currency
     const payment_amount = new BigNumber(amount)
     const payment_reference = new Keypair().publicKey;
+    setReference(payment_reference)
     const payment_label = "Botl LLP";
     const payment_message = "Botl transaction";
     let r = (Math.random() + 1).toString(36).substring(7);
@@ -124,7 +126,6 @@ export default function App() {
 
   const _url = () => {
     if(currency === "SOL") {
-      console.log("sol splToken")
       return encodeURL({
         recipient: payment_recipient,
         amount: payment_amount,
@@ -134,7 +135,6 @@ export default function App() {
         // memo: payment_memo,
       });
     } else {
-      console.log(currency, "splToken")
       return encodeURL({
         recipient: payment_recipient,
         amount: payment_amount,
@@ -146,27 +146,17 @@ export default function App() {
       });
     }
   }
-  console.log(_url())
+  setRequested(true)
   setSowhQr(true)
   setUrl(_url())
 
-  // Find the transaction in the blockchain
-  const interval = setInterval(async () => {
-    console.log("Checking for transaction...")
-    try {
-      // signatureInfo = await findReference(connection, payment_reference, {finality: 'confirmed'});
-      console.log("\n Signature found:")
-      clearInterval(interval)
-    } catch (error) {
-      if(!(error instanceof FindReferenceError)){
-        console.error(error)
-        clearInterval(interval)
-      }
-    }
-    }, 250)
+  // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+  // setInterval() 
+
+  //Find the transaction in the blockchain
 
 
-  } 
+  }
   
 
   return (
@@ -217,7 +207,7 @@ export default function App() {
                       <>
                       {
                         transactions.map((tx, id) => {
-                          return <Tx key={id} adress={tx.sender} amount={tx.amount} date={"--/--/----"} currency={currency} />
+                          return <Tx key={id} adress={tx.sender} amount={tx.amount} date={tx.timestamp} currency={tx.token} />
                         })
                       }
                       </>
@@ -277,7 +267,7 @@ export default function App() {
                             { label: 'USDC', value: 'USDC' },
                           ]}
                           value={currency}
-                          defaultValue="euroe"
+                          defaultValue="EUROe"
                           style={{
                             inputIOS: {
                               fontSize: 24,
@@ -307,6 +297,16 @@ export default function App() {
                       : <View className="h-[220px]"></View>
                     }
                   </View>
+
+                  {/*------------- status -------------- */}
+                  {
+                    requested ?
+                    <View className={"border overflow-hidden rounded-md flex flex-col mx-[5%] mt-2 py-3 bg-[#28146B] "+(paymentStatus !== "success"? "border-[#7C5EF2]" : "border-[#21BF75]")}>
+                      <View className="">
+                        <Text className="text-[#7C5EF2] bg-[#28146B] text-2xl font-semibold text-center">{paymentStatus === "pending" ? "Pending...": "Succesfull!"}</Text>
+                      </View>
+                    </View> : null
+                  }
                 </ScrollView>
               </SafeAreaView>
 
