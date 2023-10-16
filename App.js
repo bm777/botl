@@ -187,7 +187,7 @@ export default function App() {
                     {/* 3B2A7A */}
                     <View className=" w-[90%] mt-10 mx-auto bg-[#7c5ef3] rounded-xl">
                       <Text className="text-[#8C9FD0] text-2xl font-base ml-5 mt-6">My balance</Text>
-                      <Text className="text-white text-5xl font-semibold ml-5 mt-4">$ {balance.toString().slice(0, 8)} </Text>
+                      <Text className="text-white text-5xl font-semibold ml-5 mt-4">€ {balance.toString().slice(0, 8)} </Text>
                       <View className="flex flex-row justify-end mt-5 mb-5">
                         <View className="rounded-full bg-[#3B2A7A] mr-5">
                           <Text className="text-white text-lg font-semibold mx-5 my-1">Estimated total of all token</Text>
@@ -299,14 +299,14 @@ export default function App() {
                   </View>
 
                   {/*------------- status -------------- */}
-                  {
+                  {/* {
                     requested ?
                     <View className={"border overflow-hidden rounded-md flex flex-col mx-[5%] mt-2 py-3 bg-[#28146B] "+(paymentStatus !== "success"? "border-[#7C5EF2]" : "border-[#21BF75]")}>
                       <View className="">
                         <Text className="text-[#7C5EF2] bg-[#28146B] text-2xl font-semibold text-center">{paymentStatus === "pending" ? "Pending...": "Succesfull!"}</Text>
                       </View>
                     </View> : null
-                  }
+                  } */}
                 </ScrollView>
               </SafeAreaView>
 

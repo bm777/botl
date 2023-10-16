@@ -23,7 +23,6 @@ export const getTransactions = async (adr) => {
 
     for(let i=0; i<result.length; i++){
         const infos = result[i]["actions"][0]["info"]
-        const source_protocol = result[i]["actions"]
         
         if(infos["amount"] !== undefined){
             const amount = infos["amount"]
@@ -31,8 +30,6 @@ export const getTransactions = async (adr) => {
             const timestamp = result[i]["timestamp"]
             const token = infos["token_address"]
             tx.push({sender: sender, amount: amount, timestamp: timestamp, token: splTokens[token]})
-            // console.log("Info: -> ",infos)
-            //   console.log("===============> source_protocol: -> ",token, )
         }else console.log("===============> No usefull information found")
     }
     return tx
